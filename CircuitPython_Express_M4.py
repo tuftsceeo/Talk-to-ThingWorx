@@ -20,15 +20,15 @@ print("MAC addr:", [hex(i) for i in esp.MAC_address])
 def connect():
     while not esp.is_connected:
         try:
-            esp.connect_AP('SSID', 'PASSWORD')
+            esp.connect_AP('SSID', 'PASSWORD'). #Edit this with your SSID and Password
         except RuntimeError as e:
             print("could not connect to AP, retrying: ",e)
             continue
     requests.set_socket(socket, esp)
 
 # Thingworx
-Key = "APPKEY"
-urlBase = "ThingWorx URL"
+Key = "APPKEY". #Edit this with your appkey
+urlBase = "ThingWorx URL" #Edit this with your ThingWorx URL
 headers = {"Accept":"application/json","Content-Type":"application/json","AppKey":Key}
 
 result=1
@@ -49,6 +49,6 @@ def Get(thing, property):
 
 print ("WiFi: ",connect())
 while True:
-    speed=Get('Thing_Name','Property_Name')
+    speed=Get('Thing_Name','Property_Name') #Edit this with your Thing and property name
     print(speed)
     time.sleep(1)
