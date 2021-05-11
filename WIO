@@ -24,7 +24,7 @@ void setup() {
 WiFi.begin(ssid,password);
     while (WiFi.status() != WL_CONNECTED)
     {
-        WiFi.begin("virus","smoothie123");
+        WiFi.begin(ssid,password);
        
     }
     Serial.println("Connected");
