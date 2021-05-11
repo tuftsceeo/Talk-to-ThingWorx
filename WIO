@@ -1,0 +1,108 @@
+#include <rpcWiFi.h>
+#include <WiFiClientSecure.h>
+#include "TFT_eSPI.h"
+#include "RTC_SAMD51.h"
+#include <Arduino_JSON.h>
+
+#include <SPI.h>
+const char* ssid="";
+const char* password ="";
+const char * host = "pp-2008281301ci.portal.ptc.io";
+const char * api= "";
+const char * URL="/Thingworx/Things/Test1/Properties/*" ;
+int port=8443;
+int timeout=0;
+String line;
+WiFiClientSecure client;
+
+
+void setup() {
+    Serial.begin(115200);
+  delay(100);
+  // put your setup code here, to run once:
+  Serial.println("Connecting");
+WiFi.begin(ssid,password);
+    while (WiFi.status() != WL_CONNECTED)
+    {
+        WiFi.begin("virus","smoothie123");
+       
+    }
+    Serial.println("Connected");
+    Serial.println(WiFi.localIP());
+    write1("radius","10");
+    Serial.println(read1("radius"));
+    
+
+}
+
+String read1(String prop){
+  if (!client.connect(host, port))
+          {
+          Serial.println("connection failed");
+          }
+        client.println("GET " + String("/Thingworx/Things/Test1/Properties/") + prop + " HTTP/1.1");
+        client.println("Host: " + String(host));
+        
+        client.println("Content-type: application/json");
+        client.println("AppKey:92f871d8-c3bd-4fd7-8fab-ee50e1fbd0e5");
+        client.println( "Connection: close");
+        client.println();
+        timeout = millis();
+        while (client.available() == 0) {
+          if (millis() - timeout > 5000) {
+            client.stop();
+            break;
+            }
+          }
+        while (client.available())
+          {
+          line+= client.readStringUntil('\r');
+          }    
+          return line   ; 
+        } 
+
+String write1(String prop, String value){
+
+  String data= "{\"" + prop + "\": \"" + value + "\" }";
+  Serial.println(data);
+  if (!client.connect(host, port))
+          {
+          Serial.println("connection failed");
+          }
+        client.println("PUT " + String("/Thingworx/Things/Test1/Properties/*") +" HTTP/1.1");
+        client.println("Host: " + String(host));     
+        client.println("Content-type: application/json");
+        client.println("AppKey:92f871d8-c3bd-4fd7-8fab-ee50e1fbd0e5");
+        client.println( "Connection: close");
+
+        client.print("Content-Length: ");
+        client.println(data.length());
+    
+        client.println();
+        client.println(data);   
+
+
+
+        
+        timeout = millis();
+        while (client.available() == 0) {
+          if (millis() - timeout > 5000) {
+            client.stop();
+            break;
+            }
+          }
+        while (client.available())
+          {
+          line+= client.readStringUntil('\r');
+          }    
+          return line   ; 
+        } 
+
+
+
+void loop() {
+  // put your main code here, to run repeatedly:
+
+  
+
+}
